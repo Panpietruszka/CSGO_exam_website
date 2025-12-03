@@ -1,7 +1,8 @@
 document.addEventListener('DOMContentLoaded', (event) => {
+
     const inputs = document.querySelectorAll('.inputField');
     const section = document.querySelector('.basic-data');
-    // Globalna zmienna do przechowywania jawnego hasła z pierwszego inputa
+
     let firstPasswordRawValue = '';
 
     if (inputs.length > 0 && section) {
@@ -20,7 +21,31 @@ document.addEventListener('DOMContentLoaded', (event) => {
         console.error("Brak elementów inputField lub basic-data.");
     }
 
-    // FUNKCJA OCENY SIŁY HASŁA (Dla pierwszego inputa)
+    const personalDataSection = document.querySelector('.personal-data');
+
+    if (personalDataSection) {
+
+        const radioInputs = personalDataSection.querySelectorAll('input[type="radio"]');
+
+        function checkPersonalDataStatus() {
+
+            const isAnyRadioChecked = Array.from(radioInputs).some(input => input.checked);
+
+            if (isAnyRadioChecked) {
+                personalDataSection.classList.add('is-radio-active');
+            } else {
+                personalDataSection.classList.remove('is-radio-active');
+            }
+        }
+
+        radioInputs.forEach(input => {
+            input.addEventListener('change', checkPersonalDataStatus);
+        });
+
+
+        checkPersonalDataStatus();
+    }
+
     function checkPasswordStrength(password) {
         let strength = 'weak';
         if (password.length >= 6) strength = 'medium';
@@ -28,14 +53,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
         return strength;
     }
 
-    // FUNKCJA AKTUALIZACJI KOLORU (Dostosowana do obu inputów)
     function updatePasswordColor(inputElement, strength) {
         inputElement.classList.remove('weak', 'medium', 'strong');
-        // Jeśli to drugi input, używamy tylko weak/strong (czerwony/zielony)
+
         if (!inputElement.classList.contains('first-password-input') && (strength === 'medium' || strength === 'strong')) {
-            inputElement.classList.add('strong'); // Zgodne hasło (zielony)
+            inputElement.classList.add('strong');
         } else {
-            inputElement.classList.add(strength); // Dla pierwszego inputa (weak/medium/strong)
+            inputElement.classList.add(strength);
         }
     }
 
@@ -53,7 +77,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         let originalPassword = '';
         const isFirstPasswordInput = passwordInput.classList.contains('first-password-input');
 
-        // --- FUNKCJE ANIMACJI (Bez zmian) ---
+
         function maskPasswordAnimated(currentText, inputEl) {
             let masked = '';
             for (let i = 0; i < currentText.length; i++) {
@@ -79,28 +103,26 @@ document.addEventListener('DOMContentLoaded', (event) => {
         }
 
         toggleLabel.addEventListener('mousedown', (e) => { e.preventDefault(); });
-
         toggleCheckbox.addEventListener('change', function () {
             const isChecked = this.checked;
 
             if (isChecked) {
                 maskPasswordAnimated(originalPassword, passwordInput);
-                passwordInput.classList.add('masked'); // Dodajemy klasę CSS masked po zakończeniu animacji
+                passwordInput.classList.add('masked');
             } else {
                 unmaskPasswordAnimated(passwordInput.value, originalPassword, passwordInput);
-                passwordInput.classList.remove('masked'); // Usuwamy klasę CSS masked po zakończeniu animacji
+                passwordInput.classList.remove('masked');
             }
         });
 
-        // LISTENER DLA ZDARZEŃ INPUT (PISANIE / BACKSPACE / DELETE)
         passwordInput.addEventListener('input', function (event) {
             const inputElement = this;
             const currentCursorPosition = inputElement.selectionStart;
 
-            // Logika synchronizacji originalPassword
+
             if (!toggleCheckbox.checked) {
                 originalPassword = inputElement.value;
-                if (isFirstPasswordInput) firstPasswordRawValue = inputElement.value; // AKTUALIZUJEMY GLOBALNĄ ZMIENNĄ
+                if (isFirstPasswordInput) firstPasswordRawValue = inputElement.value;
             }
             else {
                 const currentValue = inputElement.value; const currentLength = currentValue.length; const originalLength = originalPassword.length;
@@ -108,36 +130,33 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 else if (currentLength < originalLength) { originalPassword = originalPassword.slice(0, currentCursorPosition) + originalPassword.slice(currentCursorPosition + (originalLength - currentLength)); }
                 inputElement.value = maskChar.repeat(originalPassword.length);
 
-                if (isFirstPasswordInput) firstPasswordRawValue = originalPassword; // AKTUALIZUJEMY GLOBALNĄ ZMIENNĄ
+                if (isFirstPasswordInput) firstPasswordRawValue = originalPassword;
             }
             inputElement.selectionStart = inputElement.selectionEnd = currentCursorPosition;
 
-            // Logika kolorowania:
+
             if (isFirstPasswordInput) {
                 const strength = checkPasswordStrength(originalPassword);
                 updatePasswordColor(passwordInput, strength);
 
-                // Aktualizujemy też kolor drugiego inputa, odwołując się do GLOBALNEJ zmiennej
+
                 const secondPasswordInput = document.querySelector('.inputField-Password:not(.first-password-input)');
                 if (secondPasswordInput) {
-                    // TUTAJ UŻYWAMY firstPasswordRawValue do porównania z JAWNĄ wartością drugiego inputa (originalPassword dla drugiego kontenera)
+
                     const matchStrength = (secondPasswordInput.originalPassword === firstPasswordRawValue && firstPasswordRawValue.length > 0) ? 'strong' : 'weak';
                     updatePasswordColor(secondPasswordInput, matchStrength);
                 }
 
             } else {
-                // Drugi input: Sprawdzamy zgodność z pierwszym, używając GLOBALNEJ zmiennej
+
                 const matchStrength = (originalPassword === firstPasswordRawValue && originalPassword.length > 0) ? 'strong' : 'weak';
                 updatePasswordColor(passwordInput, matchStrength);
             }
         });
-
-        // Musimy udostępnić originalPassword drugiemu inputowi przez właściwość DOM
         Object.defineProperty(passwordInput, 'originalPassword', {
             get: () => originalPassword
         });
 
-        // Ustawiamy domyślny kolor przy ładowaniu strony
         updatePasswordColor(passwordInput, checkPasswordStrength(originalPassword));
     });
 });
