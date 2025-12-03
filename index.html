@@ -3,43 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Strona CS:GO</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="mobile.css" media="max-width: 800px">
     <link rel="stylesheet" href="desktop.css" media="min-width: 801px">
 </head>
 <body>
     <header>
-        <div class="logo"></div>
+        <div class="container">
+        <a href="index.html" class="logo">Non Omnis Moriar</a>
+        <nav class="main-nav">
+            <a href="#hero-section">Start</a>
+            <a href="#stats-section">Statystyki</a>
+            <a href="http://bit.ly/streamy-csgo" target="_blank">Streaming</a>
+        </nav>
+        
+        <a href="../register/register.html" class="cta-button">Dołącz do nas</a>
+    </div>
     </header>
-    <section class="left-section main-section">
-        <nav>
-            <a href="index.html">Dashboard</a>
-            <a href="../register/register.html">Join Us</a>
-            <a href="http://bit.ly/streamy-csgo" target="_blank">Streaming CS:GO</a>
-        </nav>    
-    </section>
     <main>
-        <section class="first-section">
-            <h1>Witaj w witrynie klanu CS:GO Non Omnis Moriar!</h1>
-            <p>Counter-Strike: Global Offensive (CS:GO) – wieloosobowa gra komputerowa z gatunku first person 
-                shooter, stworzona oraz wydana przez studia Valve Corporation i Hidden Path 
-                Entertainment, które już wcześniej pracowały nad Counter-Strike: Source. Jest to najnowsza część serii Counter-Strike.
-                Global Offensive wydano 21 sierpnia 2012 roku na platformę Steam. Gra jest dostępna na systemy: Microsoft Windows, Linux, Mac OS X, Xbox 360 (poprzez Xbox Live Arcade) oraz PlayStation 3 (za pośrednictwem PlayStation Network) – źródło:
-                <a href="https://pl.wikipedia.org/wiki/Counter-Strike:_Global_Offensive" target="_blank">Wikipedia</a>
-            </p>
+    <section id="hero-section" class="dark-section">
+        <div class="container hero-content">
+            <h1>Klan CS:GO Non Omnis Moriar</h1>
+            <p class="subtitle">Odkryj profesjonalne statystyki, drużyny i strategię.</p>
+            
+            <a href="#stats-section" class="primary-cta-button">Zobacz Statystyki</a>
+        </div>
+    </section>
+    
+    <section id="about-csgo" class="section-padding">
+        <h2>Witaj na platformie klanu!</h2>
+        <p>Counter-Strike: Global Offensive (CS:GO) – wieloosobowa gra komputerowa z gatunku first person shooter, 
+            stworzona oraz wydana przez studia Valve Corporation i Hidden Path Entertainment, 
+            które już wcześniej pracowały nad Counter-Strike: Source. 
+            Jest to najnowsza część serii Counter-Strike. Global Offensive wydano 21 sierpnia 2012 roku na platformę Steam. 
+            Gra jest dostępna na systemy: Microsoft Windows, Linux, Mac OS X, Xbox 360 (poprzez Xbox Live Arcade) oraz PlayStation 3 (za pośrednictwem PlayStation Network) – źródło:                  
+            <a href="https://pl.wikipedia.org/wiki/Counter-Strike:_Global_Offensive" target="_blank">Wikipedia</a></p>
+    </section>
+        <section id="stats-section" class="section-padding dark-section">
+            <div class="container">
+                 <h2>Statystyki Klanu i Graczy</h2>
+                 <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Gracz</th>
+                                <th>Ranga</th>
+                                <th>K/D</th>
+                                <th>Win Rate</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            </tbody>
+                    </table>
+                 </div>
+            </div>
         </section>
+        
     </main>
     <section class="table-section">
         <table>
             <!-- Script 1 or firebase -->
         </table>
     </section>
-    <footer>
-
+    
+    <footer class="dark-section">
+        <div class="container footer-content">
+            <p>2025 Klan Non Omnis Moriar. Projekt egzaminacyjny.</p>
+            <div class="footer-links">
+                <a href="#">Kontakt</a>
+                <a href="#">Social Media</a>
+            </div
     </footer>
 
     <script src="script.js"></script>
 </body>
 </html>
+
 
