@@ -17,7 +17,7 @@
                     <section class="form-section basic-data">
                         <div class="inputs-container">
                             <div class="inputContainer">
-                                <input required="required" class="inputField" placeholder="Username" type="text" />
+                                <input required class="inputField" placeholder="Username" type="text" />
                                 <label class="usernameLabel">Username</label>
                                 <svg viewBox="0 0 448 512" class="userIcon">
                                     <path
@@ -27,7 +27,7 @@
                             </div>
 
                             <div class="inputContainer password-container">
-                                <input required="required" class="inputField inputField-Password first-password-input"
+                                <input required class="inputField inputField-Password first-password-input"
                                     placeholder="Password" type="text" />
                                 <label class="usernameLabel">Password</label>
                                 <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-lock-fill userIcon"
@@ -53,8 +53,8 @@
                             </div>
 
                             <div class="inputContainer password-container">
-                                <input required="required" class="inputField inputField-Password"
-                                    placeholder="Repeat password" type="text" />
+                                <input required class="inputField inputField-Password" placeholder="Repeat password"
+                                    type="text" />
                                 <label class="usernameLabel">Repeat Password</label>
                                 <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-lock-fill userIcon"
                                     viewBox="0 0 16 16">
@@ -89,7 +89,7 @@
                                 <div class="radio-container">
                                     <div class="radio-wrapper">
                                         <label class="radio-button">
-                                            <input id="option1" name="radio-group" type="radio" />
+                                            <input id="option1" name="radio-group" type="radio" required />
                                             <span class="radio-checkmark"></span>
                                             <span class="radio-label">Male</span>
                                         </label>
@@ -109,7 +109,8 @@
                             data-tooltip="Twoja ulubiona broń w grze">
                             <div id="checklist">
                                 <div class="column">
-                                    <input value="1" name="r" type="checkbox" id="01" class="liked-guns-list" />
+                                    <input value="1" name="r" type="checkbox" id="01" class="liked-guns-list"
+                                        required />
                                     <label for="01">Five SeveN</label>
                                     <input value="2" name="r" type="checkbox" id="02" class="liked-guns-list" />
                                     <label for="02">Desert Eagle</label>
@@ -139,7 +140,7 @@
                                         d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
                                         pathLength="575.0541381835938" class="path"></path>
                                 </svg>
-                                Akceptuję regulamin serwisu
+                                **Akceptuję regulamin serwisu**
                             </label>
                         </section>
                         <section class="newsletter">
@@ -158,11 +159,12 @@
                 </div>
             </div>
             <div class="second-row-wrapper">
-                <section class="form-section additional-info has-tooltip" data-tooltip="Wybierz swoją ulubioną mapę">
+                <section class="form-section additional-info has-tooltip" id="additional-info"
+                    data-tooltip="Wybierz swoją ulubioną mapę">
                     <div class="form-section-wrapper liked-game-guns">
                         <div id="checklist-2">
                             <div class="column">
-                                <input value="11" name="r2" type="checkbox" id="11" class="liked-guns-list" />
+                                <input value="11" name="r2" type="checkbox" id="11" class="liked-guns-list" required />
                                 <label for="11">Dust II</label>
                                 <input value="12" name="r2" type="checkbox" id="12" class="liked-guns-list" />
                                 <label for="12">Mirage</label>
@@ -180,11 +182,17 @@
                         </div>
                     </div>
                 </section>
-                
+
                 <section class="form-section tell-about-yourself-section has-tooltip" data-tooltip="Kilka słow o sobie">
-                    <textarea name="about-u" id="about-user"></textarea>
+                    <textarea name="about-u" id="about-user" required></textarea>
                     <small>Opsz swoją przygodę z CS:GO, dlaczego wybrałaś akurat nasz klan?</small>
                 </section>
+            </div>
+
+            <div class="button-container">
+                <button>
+                    <span class="button_top"> Button </span>
+                </button>
             </div>
         </form>
     </main>
