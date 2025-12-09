@@ -1,4 +1,9 @@
 document.addEventListener('DOMContentLoaded', (event) => {
+    const textarea = document.getElementById('about-user');
+    const additionalInfoSection = document.querySelector('.additional-info');
+    const tellAboutSection = document.querySelector('.tell-about-yourself-section');
+
+    // --- GŁÓWNA LOGIKA SYNCHRONIZACJI KOLUMN BAZOWYCH (Twój kod) ---
     const rightWrapper = document.querySelector('.right-side-sections-wrapper');
     const basicDataWrapper = document.querySelector('.basic-data-wrapper');
 
@@ -10,6 +15,55 @@ document.addEventListener('DOMContentLoaded', (event) => {
         }
     }
 
+    // --- FUNKCJE DLA DYNAMICZNEGO ŚLEDZENIA RESIZE'U (NOWA LOGIKA) ---
+
+    // Funkcja wywoływana, gdy mysz się porusza w trakcie przeciągania
+    function onTextareaResize(event) {
+        if (additionalInfoSection) {
+            // KASOWANIE WYSOKOŚCI: Zmusza Flexbox do ponownego przeliczenia układu.
+            additionalInfoSection.style.height = 'auto';
+
+            // Wymuszenie ponownej synchronizacji głównego kontenera dla płynności
+            requestAnimationFrame(adjustBasicDataHeight);
+        }
+    }
+
+    // Funkcja wywoływana, gdy użytkownik puszcza przycisk myszy
+    function stopTextareaResize(event) {
+        // Zatrzymujemy nasłuchiwanie
+        document.removeEventListener('mousemove', onTextareaResize);
+        document.removeEventListener('mouseup', stopTextareaResize);
+
+        // Finalne upewnienie się, że Flexbox poprawnie ustawił wysokość
+        if (additionalInfoSection) {
+            additionalInfoSection.style.height = 'auto';
+        }
+        requestAnimationFrame(adjustBasicDataHeight);
+    }
+
+    // Funkcja wywoływana, gdy użytkownik zaczyna przeciągać uchwyt resize
+    function startTextareaResize(event) {
+        // Upewniamy się, że to lewy przycisk myszy (event.buttons === 1)
+        if (event.buttons !== 1) return;
+
+        // Uruchamiamy globalne nasłuchiwanie na ruch i zwolnienie myszy
+        document.addEventListener('mousemove', onTextareaResize);
+        document.addEventListener('mouseup', stopTextareaResize);
+    }
+
+    // --- INTEGRACJA ZDARZEŃ W DÓLNYM RZĘDZIE ---
+    if (textarea && additionalInfoSection && tellAboutSection) {
+        // Rozpoczęcie śledzenia, gdy przycisk myszy jest wciśnięty na textarea
+        textarea.addEventListener('mousedown', startTextareaResize);
+
+        // Zapewnienie początkowej synchronizacji i przy wprowadzaniu danych
+        window.addEventListener('load', onTextareaResize);
+        window.addEventListener('resize', onTextareaResize);
+        textarea.addEventListener('input', onTextareaResize);
+    }
+    // ---------------------------------------------
+
+    // --- START INICJALIZACJI GŁÓWNEGO UKŁADU ---
     setTimeout(adjustBasicDataHeight, 0);
     window.addEventListener('resize', adjustBasicDataHeight);
 
@@ -56,6 +110,14 @@ document.addEventListener('DOMContentLoaded', (event) => {
         });
         checkPersonalDataStatus();
     }
+
+    textarea.addEventListener('input', () => {
+        if(textarea.value.trim().length > 0) {
+            tellAboutSection.classList.add('is-textarea-active');
+        } else {
+            tellAboutSection.classList.remove('is-textarea-active');
+        }
+    });
 
     const newsletterWrapper = document.querySelector('.newselletr-data-wrapper');
 
@@ -113,7 +175,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     setupChecklistLogic('checklist', '.liked-guns-list');
 
-    setupChecklistLogic('checklist-2', '.liked-guns-list');
+    setupChecklistLogic('additional-info', '.liked-guns-list');
 
     function checkPasswordStrength(password) {
         let strength = 'weak';
