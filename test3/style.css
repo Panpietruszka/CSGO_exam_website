@@ -40,6 +40,8 @@ h2 {
     flex-direction: column;
     gap: 20px;
     height: auto;
+    width: calc(12rem + 400px + 20px);
+    flex: 1;
 }
 
 .form-section-wrapper {
@@ -57,6 +59,8 @@ h2 {
     justify-content: flex-start;
     align-items: flex-start;
     margin-top: 20px;
+    width: calc(25rem + 20px 400px 20px);
+    height: auto;
 }
 
 .basic-data {
@@ -649,4 +653,17 @@ h2 {
 
 .has-tooltip:hover::before {
     transform: translate(0, -50%) scale(1);
+}
+.tell-about-yourself-section {
+    border-radius: 15px;
+    border: 3px solid whitesmoke;
+    flex-wrap: wrap;
+    display: flex;
+    width: calc(12rem + 400px + 20px);
+    padding: 1rem;
+    min-height: 144px;
+
+}
+.tell-about-yourself-section > textarea {
+    width: 100%;
 }
