@@ -11,11 +11,13 @@ body {
     color: whitesmoke;
     font-family: "Poppins", Whitney, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
     min-height: 100vh;
-    padding: 20px
+    padding: 20px;
+    overflow: hidden;
 }
 
 main {
     width: auto;
+    height: 100%;
     padding: 20px;
     position: absolute;
     top: 5%;
@@ -53,13 +55,16 @@ h2 {
     height: var(--right-height, auto);
 }
 
+/* --- MODYFIKACJA DLA SYNCHRONIZACJI WYSOKOŚCI --- */
 .second-row-wrapper {
     display: flex;
     gap: 20px;
     justify-content: flex-start;
-    align-items: flex-start;
+    /* KLUCZ: Wymuszenie równego rozciągania elementów-dzieci */
+    align-items: stretch;
     margin-top: 20px;
-    width: calc(25rem + 20px 400px 20px);
+    /* Poprawiona szerokość, aby była elastyczna */
+    width: auto;
     height: auto;
 }
 
@@ -286,6 +291,7 @@ h2 {
 .personal-data.is-radio-active {
     transform: translateY(-15px);
     border: 3px solid #7f29f0;
+    z-index: 10;
 }
 
 .newselletr-data-wrapper {
@@ -354,15 +360,14 @@ h2 {
     --text: whitesmoke;
     --check: #4f29f0;
     --disabled: #c3c8de;
-    --width: 400px;
+    /* --width: 400px; */
     --height: 144px;
     --border-radius: 15px;
     background: var(--background);
-    width: var(--width);
+    /* width: var(--width); */
     height: var(--height);
     border-radius: var(--border-radius);
     position: relative;
-    border: 3px solid white;
     border-radius: 15px;
     padding: 30px 40px;
     display: flex;
@@ -370,9 +375,16 @@ h2 {
     transition: all 0.3s ease;
     transform: translateY(0);
 }
+#checklist {
+    border: 3px solid whitesmoke;
+    width: 400px;
 
-#checklist.is-checklist-active,
-#checklist-2.is-checklist-active {
+}
+#checklist-2 {
+    width: 395px;
+    height: 108%;
+}
+#checklist.is-checklist-active {
     transform: translateY(-15px);
     border: 3px solid #7f29f0;
 }
@@ -654,16 +666,94 @@ h2 {
 .has-tooltip:hover::before {
     transform: translate(0, -50%) scale(1);
 }
+
 .tell-about-yourself-section {
     border-radius: 15px;
     border: 3px solid whitesmoke;
     flex-wrap: wrap;
     display: flex;
-    width: calc(12rem + 400px + 20px);
+    width: auto;
+    flex: 1;
     padding: 1rem;
     min-height: 144px;
-
+    text-align: center;
+    align-content: stretch;
+    transition: all 0.3s ease;
 }
-.tell-about-yourself-section > textarea {
+
+.tell-about-yourself-section>textarea {
     width: 100%;
+    min-height: 120px;
+    max-height: 200px;
+    resize: vertical;
+    background-color: #222;
+    border: none;
+    border-radius: 10px;
+    padding: 8px;
+    color: whitesmoke;
+    font-family: "Poppins";
+    font-size: 0.9rem;
+    outline: none;
+}
+
+
+.form-section.additional-info {
+    height: auto;
+    min-height: 144px;
+    border-radius: 15px;
+    border: 3px solid whitesmoke;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+}
+.tell-about-yourself-section > small{
+    width: 100%;
+    margin-top: 10px;
+}
+.additional-info.is-checklist-active {
+    transform: translateY(-15px);
+    border: 3px solid #7f29f0;
+    z-index: 10;
+}
+.tell-about-yourself-section.is-textarea-active {
+    transform: translateY(-15px);
+    border: 3px solid #7f29f0;
+}
+button {
+    --button_radius: 0.75em;
+    --button_color: black;
+    --button_outline_color: #7f29f0;
+    font-size: 17px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    border-radius: var(--button_radius);
+    background: var(--button_outline_color);
+    outline: none;
+}
+
+.button_top {
+    display: block;
+    box-sizing: border-box;
+    border: 2px solid var(--button_outline_color);
+    border-radius: var(--button_radius);
+    padding: 0.75em 1.5em;
+    background: var(--button_color);
+    color: var(--button_outline_color);
+    transform: translateY(-0.2em);
+    transition: transform 0.1s ease;
+}
+
+button:hover .button_top {
+    transform: translateY(-0.33em);
+}
+
+button:active .button_top {
+    transform: translateY(0);
+}
+.button-container {
+    position: absolute;
+    bottom: 7.5%;
+    left: 50%;
+    transform: translate(-50%, 2px);
 }
