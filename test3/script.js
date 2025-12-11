@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     // --- GŁÓWNA LOGIKA SYNCHRONIZACJI KOLUMN BAZOWYCH (Twój kod) ---
     const rightWrapper = document.querySelector('.right-side-sections-wrapper');
     const basicDataWrapper = document.querySelector('.basic-data-wrapper');
+    const basicDataSection = document.querySelector('.basic-data'); // Dodane dla łatwiejszego dostępu
 
     function adjustBasicDataHeight() {
         if (rightWrapper && basicDataWrapper) {
@@ -17,46 +18,34 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     // --- FUNKCJE DLA DYNAMICZNEGO ŚLEDZENIA RESIZE'U (NOWA LOGIKA) ---
 
-    // Funkcja wywoływana, gdy mysz się porusza w trakcie przeciągania
     function onTextareaResize(event) {
         if (additionalInfoSection) {
-            // KASOWANIE WYSOKOŚCI: Zmusza Flexbox do ponownego przeliczenia układu.
             additionalInfoSection.style.height = 'auto';
-
-            // Wymuszenie ponownej synchronizacji głównego kontenera dla płynności
             requestAnimationFrame(adjustBasicDataHeight);
         }
     }
 
-    // Funkcja wywoływana, gdy użytkownik puszcza przycisk myszy
     function stopTextareaResize(event) {
-        // Zatrzymujemy nasłuchiwanie
         document.removeEventListener('mousemove', onTextareaResize);
         document.removeEventListener('mouseup', stopTextareaResize);
 
-        // Finalne upewnienie się, że Flexbox poprawnie ustawił wysokość
         if (additionalInfoSection) {
             additionalInfoSection.style.height = 'auto';
         }
         requestAnimationFrame(adjustBasicDataHeight);
     }
 
-    // Funkcja wywoływana, gdy użytkownik zaczyna przeciągać uchwyt resize
     function startTextareaResize(event) {
-        // Upewniamy się, że to lewy przycisk myszy (event.buttons === 1)
         if (event.buttons !== 1) return;
 
-        // Uruchamiamy globalne nasłuchiwanie na ruch i zwolnienie myszy
         document.addEventListener('mousemove', onTextareaResize);
         document.addEventListener('mouseup', stopTextareaResize);
     }
 
     // --- INTEGRACJA ZDARZEŃ W DÓLNYM RZĘDZIE ---
     if (textarea && additionalInfoSection && tellAboutSection) {
-        // Rozpoczęcie śledzenia, gdy przycisk myszy jest wciśnięty na textarea
         textarea.addEventListener('mousedown', startTextareaResize);
 
-        // Zapewnienie początkowej synchronizacji i przy wprowadzaniu danych
         window.addEventListener('load', onTextareaResize);
         window.addEventListener('resize', onTextareaResize);
         textarea.addEventListener('input', onTextareaResize);
@@ -68,19 +57,20 @@ document.addEventListener('DOMContentLoaded', (event) => {
     window.addEventListener('resize', adjustBasicDataHeight);
 
     const inputs = document.querySelectorAll('.inputField');
-    const section = document.querySelector('.basic-data');
+
+    // Zmienna do przechowywania surowej wartości pierwszego hasła
     let firstPasswordRawValue = '';
 
-    if (inputs.length > 0 && section) {
+    if (inputs.length > 0 && basicDataSection) {
         inputs.forEach(inputElement => {
             inputElement.addEventListener('focus', () => {
-                section.style.transform = 'translateY(-15px)';
+                basicDataSection.style.transform = 'translateY(-15px)';
                 setTimeout(adjustBasicDataHeight, 0);
             });
 
             inputElement.addEventListener('blur', (e) => {
                 if (!inputElement.value && !inputElement.matches(':focus')) {
-                    section.style.transform = 'translateY(0)';
+                    basicDataSection.style.transform = 'translateY(0)';
                     setTimeout(adjustBasicDataHeight, 0);
                 }
             });
@@ -112,7 +102,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     }
 
     textarea.addEventListener('input', () => {
-        if(textarea.value.trim().length > 0) {
+        if (textarea.value.trim().length > 0) {
             tellAboutSection.classList.add('is-textarea-active');
         } else {
             tellAboutSection.classList.remove('is-textarea-active');
@@ -179,7 +169,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     function checkPasswordStrength(password) {
         let strength = 'weak';
+        // Minimalna długość 6
         if (password.length >= 6) strength = 'medium';
+        // Długość min. 8 ORAZ Duża litera ORAZ Cyfra
         if (password.length >= 8 && /[A-Z]/.test(password) && /[0-9]/.test(password)) strength = 'strong';
         return strength;
     }
@@ -187,12 +179,56 @@ document.addEventListener('DOMContentLoaded', (event) => {
     function updatePasswordColor(inputElement, strength) {
         inputElement.classList.remove('weak', 'medium', 'strong');
 
+        // Logic for repeat password field: if it's not the first one, 
+        // it only gets 'strong' if it matches and is not empty.
         if (!inputElement.classList.contains('first-password-input') && (strength === 'medium' || strength === 'strong')) {
+            // W przypadku pola "Repeat Password" klasa 'strong' oznacza zgodność
             inputElement.classList.add('strong');
-        } else {
+        } else if (inputElement.classList.contains('first-password-input')) {
+            // W przypadku pola "Password" klasa odzwierciedla faktyczną siłę
             inputElement.classList.add(strength);
+        } else {
+            // Dla "Repeat Password" niezgodnego/pustego
+            inputElement.classList.add('weak');
         }
     }
+
+    // --- FUNKCJA WALIDACJI CAŁEGO BLOKU .basic-data (NOWA LOGIKA) ---
+    function validateBasicData() {
+        if (!basicDataSection) return;
+
+        // 1. Elementy
+        const usernameInput = document.querySelector('.basic-data .inputField[name="user"]'); // Zakładam name="user"
+        const firstPasswordInput = document.querySelector('.inputField-Password.first-password-input');
+        const repeatPasswordInput = document.querySelector('.inputField-Password:not(.first-password-input)');
+
+        if (!usernameInput || !firstPasswordInput || !repeatPasswordInput) {
+            return;
+        }
+
+        // Pobranie surowych haseł
+        const firstPassword = firstPasswordInput.originalPassword || '';
+        const repeatPassword = repeatPasswordInput.originalPassword || '';
+
+        // 2. Walidacja Nazwy Użytkownika (musi być wypełnione i mieć min. 3 znaki)
+        const isUsernameFilled = usernameInput.value.trim().length >= 3;
+
+        // 3. Walidacja Siły Hasła (musi być 'strong')
+        const isPasswordStrong = checkPasswordStrength(firstPassword) === 'strong';
+
+        // 4. Walidacja Powtórzenia Hasła (muszą się zgadzać i hasło nie może być puste)
+        const doPasswordsMatch = (firstPassword.length > 0) && (firstPassword === repeatPassword);
+
+        // 5. Ostateczna decyzja i dodanie/usunięcie klasy
+        const isBasicDataValid = isUsernameFilled && isPasswordStrong && doPasswordsMatch;
+
+        if (isBasicDataValid) {
+            basicDataSection.classList.add('is-valid');
+        } else {
+            basicDataSection.classList.remove('is-valid');
+        }
+    }
+    // ----------------------------------------------------------------
 
     const passwordContainers = document.querySelectorAll('.password-container');
     const maskChar = '•';
@@ -207,6 +243,10 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
         let originalPassword = '';
         const isFirstPasswordInput = passwordInput.classList.contains('first-password-input');
+
+        // Wczytanie początkowej wartości, jeśli istnieje
+        originalPassword = passwordInput.value;
+        if (isFirstPasswordInput) firstPasswordRawValue = originalPassword;
 
         function maskPasswordAnimated(currentText, inputEl) {
             let masked = '';
@@ -243,6 +283,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 unmaskPasswordAnimated(passwordInput.value, originalPassword, passwordInput);
                 passwordInput.classList.remove('masked');
             }
+            validateBasicData(); // Walidacja po zmianie widoczności
         });
 
         passwordInput.addEventListener('input', function (event) {
@@ -269,6 +310,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
                 const secondPasswordInput = document.querySelector('.inputField-Password:not(.first-password-input)');
                 if (secondPasswordInput) {
+                    // Update repeat password color based on match
                     const matchStrength = (secondPasswordInput.originalPassword === firstPasswordRawValue && firstPasswordRawValue.length > 0) ? 'strong' : 'weak';
                     updatePasswordColor(secondPasswordInput, matchStrength);
                 }
@@ -277,11 +319,33 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 const matchStrength = (originalPassword === firstPasswordRawValue && originalPassword.length > 0) ? 'strong' : 'weak';
                 updatePasswordColor(passwordInput, matchStrength);
             }
+
+            validateBasicData(); // Walidacja po wprowadzeniu danych
         });
+
+        // Umożliwienie dostępu do surowej wartości z innych elementów/funkcji
         Object.defineProperty(passwordInput, 'originalPassword', {
             get: () => originalPassword
         });
 
         updatePasswordColor(passwordInput, checkPasswordStrength(originalPassword));
     });
+
+    // --- INTEGRACJA WALIDACJI DANYCH PODSTAWOWYCH Z INNYMI POLAMI ---
+
+    // Znajdź wszystkie inputy w sekcji basic-data, które powinny wyzwalać walidację
+    const validationInputs = document.querySelectorAll('.basic-data .inputField');
+
+    if (validationInputs.length > 0) {
+        validationInputs.forEach(inputElement => {
+            // Nasłuchiwanie na 'input' (zmiana wartości) i 'blur' (wyjście z pola)
+            if (!inputElement.classList.contains('inputField-Password')) {
+                inputElement.addEventListener('input', validateBasicData);
+                inputElement.addEventListener('blur', validateBasicData);
+            }
+        });
+    }
+
+    validateBasicData();
+
 });
