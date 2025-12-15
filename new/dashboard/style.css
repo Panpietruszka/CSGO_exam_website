@@ -674,7 +674,7 @@ footer {
 }
 
 .footer-links a:hover {
-	color: var(--color-cta-text);
+	color: var(--color-link-hover);
 }
 
 .copyright {

@@ -592,7 +592,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
         checkboxInputs.forEach(input => {
             input.addEventListener('change', (e) => {
                 checkNewsletterStatus();
-                const label = e.target.closest('.checkbox-container').querySelector('span').textContent.trim();
+                const container = e.target.closest('.container');
+                const label = container ? container.textContent.replace(/\s\s+/g, ' ').trim() : 'Nieznana Etykieta';
                 const state = e.target.checked ? 'Aktywowano' : 'Dezaktywowano';
                 showNotification('call', `${state}: ${label}`);
             });

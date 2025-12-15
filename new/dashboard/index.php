@@ -56,6 +56,7 @@ if (!$result) {
         content="Oficjalna strona klanu CS:GO Non Omnis Moriar. Statystyki, drużyny, historia i rekrutacja.">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="../icons/home.png" type="image/x-icon">
     <style>
         .table-wrapper {
             overflow-x: auto;
@@ -283,7 +284,7 @@ if (!$result) {
 
         <section class="settings-section-wrap">
             <div class="settings">
-                <img src="../icons/setting.png" alt="settings" height="40px" width="40px" id="settings-icon"
+                <img src="../icons/setting-dark.png" alt="settings" height="40px" width="40px" id="settings-icon"
                     class="cursor-pointer">
 
                 <div id="settings-dropdown"
