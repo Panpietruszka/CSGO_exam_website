@@ -185,7 +185,7 @@ if (sideMenu) {
 const settingsIcon = document.getElementById('settings-icon');
 const settingsDropdown = document.getElementById('settings-dropdown');
 const changeThemeLi = document.getElementById('change-theme-li');
-const logoutLink = settingsDropdown ? settingsDropdown.querySelector('#logout-link') : null;
+// Usunięto: const logoutLink = settingsDropdown ? settingsDropdown.querySelector('#logout-link') : null;
 const dropdownActiveClass = 'active';
 
 /**
@@ -283,9 +283,11 @@ if (settingsIcon && settingsDropdown) {
         });
     }
 
-    // Obsługa kliknięcia "Wyloguj"
-    if (logoutLink) {
-        logoutLink.addEventListener('click', (e) => {
+    // === ZAKTUALIZOWANA OBSŁUGA KLIKNIĘCIA "WYLOGUJ" DLA WSZYSTKICH LINKÓW (ZARÓWNO Z DROPDOWN JAK I Z MENU BOCZNEGO) ===
+    const allLogoutLinks = document.querySelectorAll('#logout-button-side-menu, #logout-link-settings');
+
+    allLogoutLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
             e.preventDefault(); // Zatrzymujemy domyślną akcję linku
 
             // Definicja ikony wylogowania
@@ -300,18 +302,20 @@ if (settingsIcon && settingsDropdown) {
 
             // === POPRAWKA LOGIKI WYLOGOWANIA ===
             setTimeout(() => {
-                // Pobieramy ścieżkę z atrybutu href linku
-                const logoutUrl = logoutLink.href;
+                // Pobieramy ścieżkę z atrybutu href linku, który został kliknięty
+                const logoutUrl = link.href;
 
                 // Faktyczne przekierowanie do skryptu PHP, który niszczy sesję
                 window.location.href = logoutUrl;
 
-                // Ustawienia nie są już potrzebne, bo nastąpi przekierowanie
-                settingsDropdown.classList.remove(dropdownActiveClass);
+                // Zamknięcie dropdownu, jeśli kliknięto w ten element
+                if (settingsDropdown && link.id === 'logout-link-settings') {
+                    settingsDropdown.classList.remove(dropdownActiveClass);
+                }
             }, 500);
             // ===================================
         });
-    }
+    });
 }
 
 
@@ -516,15 +520,22 @@ function generujKropki() {
 
 /**
  * Obsługuje zdarzenia najazdu/skupienia i wyświetla informacje w Dynamic Island.
+ * UWAGA: infoText i iconHTML są domyślne. Jeśli element posiada data-island-content, on ma priorytet.
  * @param {HTMLElement} element Element do monitorowania.
- * @param {string} info Wiadomość do wyświetlenia.
- * @param {string} iconHTML HTML ikony do wyświetlenia.
+ * @param {string} infoText Domyślna wiadomość do wyświetlenia (lub używana jako fallback).
+ * @param {string} iconHTML Domyślny HTML ikony (lub używany jako fallback).
  */
-function monitorIslandInfo(element, info, iconHTML) {
+function monitorIslandInfo(element, infoText, iconHTML) {
     let returnState = 'idle';
     let returnCustomState = null;
 
     element.addEventListener('mouseenter', () => {
+
+        // --- ZMODYFIKOWANA LOGIKA: POBIERANIE DYNAMICZNEJ TREŚCI ---
+        // Spróbuj pobrać treść z atrybutu data-island-content. Jeśli nie ma, użyj domyślnej infoText.
+        const dynamicInfo = element.getAttribute('data-island-content');
+        const finalInfo = dynamicInfo || infoText;
+        // -----------------------------------------------------------
 
         // Zapisz stan Wyspy przed nadpisaniem
         if (currentIslandStateKey === 'section-status') {
@@ -541,7 +552,7 @@ function monitorIslandInfo(element, info, iconHTML) {
         if (returnState === 'music' || returnState === 'call') return;
 
         // NADPISZ stanem małej informacji o hooverze (duration = 0)
-        setIslandState('small-info', states['small-info'](info, iconHTML), 0);
+        setIslandState('small-info', states['small-info'](finalInfo, iconHTML), 0);
     });
 
     element.addEventListener('mouseleave', () => {
@@ -581,7 +592,7 @@ function startMonitoringInteractiveElements() {
     });
 
     // 2. Przyciski CTA
-    document.querySelectorAll('.cta-button, .primary-cta-button').forEach(button => {
+    document.querySelectorAll('.cta-button a:not([data-island-content]), .primary-cta-button').forEach(button => {
         const text = button.textContent.trim().replace(/\s\s+/g, ' ');
         monitorIslandInfo(button, `Akcja: ${text}`, cursorIconHTML);
     });
@@ -598,12 +609,17 @@ function startMonitoringInteractiveElements() {
         // Zmień Motyw
         const themeLink = changeThemeLi.querySelector('a');
         monitorIslandInfo(themeLink, 'Zmiana motywu', getThemeIconHTML(document.body.classList.contains('dark-theme')));
-
-        // Wyloguj
-        if (logoutLink) {
-            monitorIslandInfo(logoutLink, 'Wylogowanie', logoutIconHTML);
-        }
     }
+
+    // 5. OBSŁUGA DYNAMICZNEGO PRZYCISKU WYLOGOWANIA W MENU BOCZNYM I W USTAWIEŃ (Używa data-island-content)
+    const logoutLinks = document.querySelectorAll('#logout-button-side-menu, #logout-link-settings');
+    logoutLinks.forEach(link => {
+        // Obiekt link musi być monitorowany tylko jeśli ma atrybut data-island-content (czyli jeśli użytkownik jest zalogowany)
+        if (link.getAttribute('data-island-content')) {
+            // Funkcja monitorIslandInfo automatycznie pobierze treść z data-island-content
+            monitorIslandInfo(link, 'Wylogowanie', logoutIconHTML);
+        }
+    });
 }
 
 

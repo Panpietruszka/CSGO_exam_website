@@ -7,6 +7,9 @@ require_once '../connection/connect.php';
 $is_logged_in = isset($_SESSION['user_id']) && $_SESSION['user_id'] > 0;
 $username = $is_logged_in ? htmlspecialchars($_SESSION['username']) : 'Gościu';
 
+// Dynamiczna treść dla Dynamic Island
+$island_logout_content = "Wylogowanie konta **{$username}** z serwisu.";
+
 
 $sql = "
 SELECT 
@@ -98,7 +101,10 @@ if (!$result) {
             </nav>
             <button class="cta-button">
                 <?php if ($is_logged_in): ?>
-                    <a href="../connection/logout.php">Wyloguj (<?php echo $username; ?>)</a>
+                    <a href="../connection/logout.php" id="logout-button-side-menu"
+                        data-island-content="<?php echo htmlspecialchars($island_logout_content); ?>">
+                        Wyloguj (<?php echo $username; ?>)
+                    </a>
                 <?php else: ?>
                     <a href="../register/index.html">Dołącz do nas</a>
                 <?php endif; ?>
@@ -285,12 +291,14 @@ if (!$result) {
                     <ul class="py-2">
                         <?php if ($is_logged_in): ?>
                             <li class="px-4 py-2 cursor-pointer transition duration-150 ease-in-out">
-                                <a href="../connection/logout.php" class="block" id="logout-link">Wyloguj (Logout)</a>
+                                <a href="../connection/logout.php" class="block" id="logout-link-settings"
+                                    data-island-content="<?php echo htmlspecialchars($island_logout_content); ?>">
+                                    Wyloguj (Logout)
+                                </a>
                             </li>
                         <?php endif; ?>
 
-                        <li id="change-theme-li"
-                            class="px-4 py-2 cursor-pointer transition duration-150 ease-in-out">
+                        <li id="change-theme-li" class="px-4 py-2 cursor-pointer transition duration-150 ease-in-out">
                             <a href="#" class="block">Zmień Motyw</a>
                         </li>
                     </ul>
