@@ -149,7 +149,7 @@ if (!$result) {
         </section>
 
         <section id="map-pool-section" class="section-padding section-content" data-nazwa="Mapy">
-            <div class="container">
+            <div class="container map-pool-container">
                 <h2>Map Pool i Specjalizacje</h2>
                 <p>Profesjonalizm w CS:GO wymaga dogłębnej znajomości wszystkich map z aktywnego puli turniejowego.
                 </p>
@@ -284,13 +284,13 @@ if (!$result) {
                     class="settings-dropdown text-white rounded-lg shadow-2xl w-40 overflow-hidden mb-2">
                     <ul class="py-2">
                         <?php if ($is_logged_in): ?>
-                            <li class="px-4 py-2 hover:bg-gray-700 cursor-pointer transition duration-150 ease-in-out">
+                            <li class="px-4 py-2 cursor-pointer transition duration-150 ease-in-out">
                                 <a href="../connection/logout.php" class="block" id="logout-link">Wyloguj (Logout)</a>
                             </li>
                         <?php endif; ?>
 
                         <li id="change-theme-li"
-                            class="px-4 py-2 hover:bg-gray-700 cursor-pointer transition duration-150 ease-in-out">
+                            class="px-4 py-2 cursor-pointer transition duration-150 ease-in-out">
                             <a href="#" class="block">Zmień Motyw</a>
                         </li>
                     </ul>
@@ -310,17 +310,6 @@ if (!$result) {
         </div>
     </footer>
     <script type="module" src="script.js"></script>
-
-    <script>
-        const isUserLoggedIn = <?php echo $is_logged_in ? 'true' : 'false'; ?>;
-        const currentUsername = "<?php echo $username; ?>";
-
-        if (isUserLoggedIn) {
-            console.log(`[STATUS SESJI] Zalogowano jako: ${currentUsername}`);
-        } else {
-            console.warn('[STATUS SESJI] Użytkownik jest WYLOLOGOWANY.');
-        }
-    </script>
 </body>
 
 </html>

@@ -476,6 +476,10 @@ h2 {
 	padding: 20px;
 }
 
+.map-pool-container {
+	gap: 3rem;
+}
+
 .pleasure-to-meet-u {
 	background-color: var(--color-background-white);
 	width: auto;
@@ -798,12 +802,12 @@ footer {
 }
 
 .settings-dropdown li a:hover {
-	background-color: var(--color-background-light);
+	background-color: transparent;
 	color: var(--color-link-hover);
 }
 
 .dark-theme .settings-dropdown li a:hover {
-	background-color: #383838;
+	background-color: transparent;
 }
 
 @media only screen and (max-width: 768px) {

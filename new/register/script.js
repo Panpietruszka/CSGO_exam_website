@@ -314,7 +314,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
             mainContainer.classList.add('mode-login');
             mainContainer.classList.remove('mode-signup');
-            formTitle.innerText = 'Zaloguj się';
+            formTitle.innerText = 'Login';
 
             showNotification('call', message);
 
@@ -324,7 +324,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
             mainContainer.classList.remove('mode-login');
             mainContainer.classList.add('mode-signup');
-            formTitle.innerText = 'Rejestracja nowego użytkownika';
+            formTitle.innerText = 'Register new user';
 
             showNotification('call', message);
 
@@ -436,6 +436,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
             return;
         }
         const likedCheckboxes = checklistContainer.querySelectorAll(checkboxSelector);
+
         function checkLikedStatus() {
             const isAnyLikedCheckboxChecked = Array.from(likedCheckboxes).some(input => input.checked);
             if (isAnyLikedCheckboxChecked) {
@@ -447,10 +448,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 setTimeout(adjustBasicDataHeight, 0);
             }
         }
+
         likedCheckboxes.forEach(input => {
             input.addEventListener('change', (e) => {
                 checkLikedStatus();
-                const label = e.target.closest('.checkbox-container').querySelector('.liked-guns-list').textContent.trim();
+
+                const label = e.target.value.trim();
+
                 const state = e.target.checked ? 'Wybrano' : 'Odznaczono';
                 showNotification('call', `${state}: ${label}`);
             });
